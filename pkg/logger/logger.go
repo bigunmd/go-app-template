@@ -11,22 +11,22 @@ import (
 )
 
 func LoggerConfigSetDefault() {
-	viper.BindEnv("logger.level", "LOGGER_LEVEL", "LOG_LEVEL", "LOGGING")
+	_ = viper.BindEnv("logger.level", "LOGGER_LEVEL", "LOG_LEVEL", "LOGGING")
 	viper.SetDefault("logger.level", "info")
 
-	viper.BindEnv("logger.writeToFile", "LOGGER_WRITE_TO_FILE", "LOG_WRITE_TO_FILE")
+	_ = viper.BindEnv("logger.writeToFile", "LOGGER_WRITE_TO_FILE", "LOG_WRITE_TO_FILE")
 	viper.SetDefault("logger.writeToFile", false)
 
-	viper.BindEnv("logger.file.path", "LOGGER_FILE_PATH", "LOG_FILE_PATH")
+	_ = viper.BindEnv("logger.file.path", "LOGGER_FILE_PATH", "LOG_FILE_PATH")
 	viper.SetDefault("logger.file.path", "~/")
 
-	viper.BindEnv("logger.file.name", "LOGGER_FILE_NAME", "LOG_FILE_NAME")
+	_ = viper.BindEnv("logger.file.name", "LOGGER_FILE_NAME", "LOG_FILE_NAME")
 	viper.SetDefault("logger.file.name", "app.log")
 
-	viper.BindEnv("logger.file.maxAge", "LOGGER_FILE_MAX_AGE", "LOG_FILE_MAX_AGE")
+	_ = viper.BindEnv("logger.file.maxAge", "LOGGER_FILE_MAX_AGE", "LOG_FILE_MAX_AGE")
 	viper.SetDefault("logger.file.maxAge", 24*time.Hour)
 
-	viper.BindEnv("logger.file.rotationTime", "LOGGER_FILE_ROTATION_TIME", "LOG_FILE_ROTATION_TIME")
+	_ = viper.BindEnv("logger.file.rotationTime", "LOGGER_FILE_ROTATION_TIME", "LOG_FILE_ROTATION_TIME")
 	viper.SetDefault("logger.file.rotationTime", 24*7*time.Hour)
 
 }
@@ -104,6 +104,11 @@ func (l *LogrusLogger) AddError(err error) Entry {
 
 func NewLogger() Logger {
 	logger := logrus.New()
+	lvl, err := logrus.ParseLevel(viper.GetString("logger.level"))
+	if err != nil {
+		panic(err)
+	}
+	logger.SetLevel(lvl)
 	logger.SetReportCaller(true)
 	jsonFmt := &logrus.JSONFormatter{PrettyPrint: true}
 	if viper.GetBool("logger.writeToFile") {
