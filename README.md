@@ -14,7 +14,7 @@
   - [Logger](#logger)
     - [yaml](#yaml)
     - [env](#env)
-    - [args](#args)
+  - [CLI args](#cli-args)
 ## Project requirements
 - Go 1.19
 - Docker
@@ -85,7 +85,7 @@ LOGGER_FILE_NAME="app.log" # [LOG_FILE_NAME]
 LOGGER_FILE_MAX_AGE="24h" # [LOG_FILE_MAX_AGE]
 LOGGER_FILE_ROTATION_TIME="168h" # [LOG_FILE_ROTATION_TIME]
 ```
-### args
+## CLI args
 ```bash
-$ ./build/app --logger.level info
+$ ./build/app --help
 ```
