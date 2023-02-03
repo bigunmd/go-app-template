@@ -35,7 +35,7 @@ Inspects source code for security problems by scanning the Go AST.
 $ go install github.com/securego/gosec/v2/cmd/gosec@latest
 ```
 ### swag
-Swag converts Go annotations to Swagger Documentation 2.0. We've created a variety of plugins for popular Go web frameworks. This allows you to quickly integrate with an existing Go project (using Swagger UI).
+Swag converts Go annotations to Swagger Documentation 2.0.
 ```bash
 $ go install github.com/swaggo/swag/cmd/swag@latest
 ```
