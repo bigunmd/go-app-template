@@ -32,17 +32,17 @@ type controller struct {
 
 // CreateUser godoc
 //
-//	@Summary		Create new user
-//	@Description	Create new user
-//	@Tags			users
-//	@Accept			json
-//	@Produce		json
-//	@Param			user	body	model.UserBase	true	"create User request"
-//	@Success		201
-//	@Failure		400	{object}	validator.ErrorResponse
-//	@Failure		500	{object}	fiber.Error
-//	@Header			201	{string}	Location	"/users/:id"
-//	@Router			/users [post]
+// @Summary      Create new user
+// @Description  Create new user
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        user  body  model.UserBase  true  "create User request"
+// @Success      201
+// @Failure      400  {object}  validator.ErrorResponse
+// @Failure      500  {object}  fiber.Error
+// @Header       201  {string}  Location  "/api/users/:id"
+// @Router       /users [post]
 func (c *controller) CreateUser() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		u := new(model.UserBase)
@@ -65,17 +65,17 @@ func (c *controller) CreateUser() fiber.Handler {
 
 // DeleteUser godoc
 //
-//	@Summary		Delete user
-//	@Description	Delete user by id
-//	@Tags			users
-//	@Accept			json
-//	@Produce		json
-//	@Param			id	path	string	true	"user id"
-//	@Success		204
-//	@Failure		400	{object}	fiber.Error
-//	@Failure		404	{object}	fiber.Error
-//	@Failure		500	{object}	fiber.Error
-//	@Router			/users/{id} [delete]
+// @Summary      Delete user
+// @Description  Delete user by id
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        id  path  string  true  "user id"
+// @Success      204
+// @Failure      400  {object}  fiber.Error
+// @Failure      404  {object}  fiber.Error
+// @Failure      500  {object}  fiber.Error
+// @Router       /users/{id} [delete]
 func (c *controller) DeleteUser() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		id, err := uuid.Parse(ctx.Params("id"))
@@ -96,17 +96,17 @@ func (c *controller) DeleteUser() fiber.Handler {
 
 // GetUser godoc
 //
-//	@Summary		Get user
-//	@Description	Get user by id
-//	@Tags			users
-//	@Accept			json
-//	@Produce		json
-//	@Param			id	path		string	true	"user id"
-//	@Success		200	{object}	model.User
-//	@Failure		400	{object}	fiber.Error
-//	@Failure		404	{object}	fiber.Error
-//	@Failure		500	{object}	fiber.Error
-//	@Router			/users/{id} [get]
+// @Summary      Get user
+// @Description  Get user by id
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        id   path      string  true  "user id"
+// @Success      200  {object}  model.User
+// @Failure      400  {object}  fiber.Error
+// @Failure      404  {object}  fiber.Error
+// @Failure      500  {object}  fiber.Error
+// @Router       /users/{id} [get]
 func (c *controller) GetUser() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		id, err := uuid.Parse(ctx.Params("id"))
@@ -126,18 +126,18 @@ func (c *controller) GetUser() fiber.Handler {
 
 // GetUsers godoc
 //
-//	@Summary		Get users
-//	@Description	Get users with options
-//	@Tags			users
-//	@Accept			json
-//	@Produce		json
-//	@Param			limit		query		int	false	"limit"
-//	@Param			offset		query		int	false	"offset"
-//	@Param			lt_datetime	query		int	false	"less than unix timestamp"
-//	@Param			gt_datetime	query		int	false	"greater than unix timestamp"
-//	@Success		200			{object}	model.Users
-//	@Failure		500			{object}	fiber.Error
-//	@Router			/users [get]
+// @Summary      Get users
+// @Description  Get users with options
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        limit        query     int  false  "limit"
+// @Param        offset       query     int  false  "offset"
+// @Param        lt_datetime  query     int  false  "less than unix timestamp"
+// @Param        gt_datetime  query     int  false  "greater than unix timestamp"
+// @Success      200          {object}  model.Users
+// @Failure      500          {object}  fiber.Error
+// @Router       /users [get]
 func (c *controller) GetUsers() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		opts := new(model.UserOptions)
@@ -159,18 +159,18 @@ func (c *controller) GetUsers() fiber.Handler {
 
 // UpdateUser godoc
 //
-//	@Summary		Update user
-//	@Description	Update existing user or create a new one
-//	@Tags			users
-//	@Accept			json
-//	@Produce		json
-//	@Param			user	body	model.User	true	"Update User request"\
-//	@Param			id		path	string		true	"user id"
-//	@Success		201
-//	@Failure		400	{object}	validator.ErrorResponse
-//	@Failure		500	{object}	fiber.Error
-//	@Header			201	{string}	Location	"/users/:id"
-//	@Router			/users/{id} [put]
+// @Summary      Update user
+// @Description  Update existing user or create a new one
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        user  body  model.User  true  "Update User request"\
+// @Param        id    path  string      true  "user id"
+// @Success      201
+// @Failure      400  {object}  validator.ErrorResponse
+// @Failure      500  {object}  fiber.Error
+// @Header       201  {string}  Location  "/api/users/:id"
+// @Router       /users/{id} [put]
 func (c *controller) UpdateUser() fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		id, err := uuid.Parse(ctx.Params("id"))
