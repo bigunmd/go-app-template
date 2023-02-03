@@ -101,7 +101,7 @@
                         "headers": {
                             "Location": {
                                 "type": "string",
-                                "description": "/users/:id"
+                                "description": "/api/users/:id"
                             }
                         }
                     },
@@ -205,7 +205,7 @@
                         "headers": {
                             "Location": {
                                 "type": "string",
-                                "description": "/users/:id"
+                                "description": "/api/users/:id"
                             }
                         }
                     },
