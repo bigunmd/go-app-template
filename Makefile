@@ -1,4 +1,4 @@
-APP_NAME = service
+APP_NAME = app
 BUILD_DIR = $(PWD)/build
 MIGRATIONS_FOLDER = $(PWD)/infrastructure/migrations
 DATABASE_URL = postgres://postgres:postgres@127.0.0.1/postgres?sslmode=disable
@@ -13,7 +13,7 @@ lint:
 	golangci-lint run ./...
 test: clean critic security lint
 	go test -v -timeout 30s -coverprofile=cover.out -cover -p 1 ./...
-	go tool cover -func=cover.out
+	go tool cover -html=cover.out -o coverage.html
 build: test
 	CGO_ENABLED=0 go build -ldflags="-w -s" -o $(BUILD_DIR)/$(APP_NAME) main.go
 run: swag build
