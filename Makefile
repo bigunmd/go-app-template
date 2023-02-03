@@ -52,6 +52,8 @@ docker.stop.postgres:
 	docker stop $(APP_NAME)-postgres
 docker.stop: docker.stop.redis docker.stop.postgres
 docker.run: docker.network docker.redis docker.postgres
+migrate.create:
+	migrate create -dir $(MIGRATIONS_FOLDER) -ext .sql -seq $(migration_name)
 migrate.up:
 	migrate -path $(MIGRATIONS_FOLDER) -database "$(DATABASE_URL)" up
 migrate.down:
