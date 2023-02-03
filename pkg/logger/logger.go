@@ -105,12 +105,9 @@ func (l *LogrusLogger) AddError(err error) Entry {
 func NewLogger() Logger {
 	logger := logrus.New()
 	logger.SetReportCaller(true)
-	logger.SetFormatter(&logrus.JSONFormatter{
-		PrettyPrint: true,
-	})
-	logger.Info(viper.GetDuration("logger.file.maxAge"))
-	logger.Info(viper.GetDuration("logger.file.rotationTime"))
+	jsonFmt := &logrus.JSONFormatter{PrettyPrint: true}
 	if viper.GetBool("logger.writeToFile") {
+		jsonFmt.PrettyPrint = false
 		writer, err := rotatelogs.New(
 			viper.GetString("logger.file.path")+viper.GetString("logger.file.name")+".%Y%m%dT%H%M",
 			rotatelogs.WithLinkName(viper.GetString("logger.file.path")+viper.GetString("logger.file.name")),
@@ -123,5 +120,6 @@ func NewLogger() Logger {
 		mw := io.MultiWriter(os.Stdout, writer)
 		logger.SetOutput(mw)
 	}
+	logger.SetFormatter(jsonFmt)
 	return &LogrusLogger{logger}
 }
