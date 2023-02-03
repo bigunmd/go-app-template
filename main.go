@@ -22,28 +22,31 @@ import (
 //go:embed infrastructure/migrations
 var migrations embed.FS
 
-// @title           Swagger Example API
-// @version         1.0
-// @description     This is a sample service template.
-// @termsOfService  http://swagger.io/terms/
+//	@title			Swagger Example API
+//	@version		1.0
+//	@description	This is a sample service template.
+//	@termsOfService	http://swagger.io/terms/
 
-// @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
+//	@contact.name	API Support
+//	@contact.url	http://www.swagger.io/support
+//	@contact.email	support@swagger.io
 
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+//	@license.name	Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host      127.0.0.1:8000
-// @BasePath  /api
+// @host		127.0.0.1:8000
+// @BasePath	/api
 func main() {
 	configFile := pflag.String("config", "", "configuration file")
-	pflag.String("logger.level", "", "log level")
-	// host := flag.String("h", "", "host")
-	// port := flag.Int("p", -1, "port")
+	pflag.String("logger.level", "", "set logger level [panic, fatal, error, warn, info, debug, trace]")
+	pflag.Bool("logger.writeToFile", false, "write logs to filesystem (default: false)")
+	pflag.String("logger.file.path", "", "where to store log files (default: '~/')")
+	pflag.String("logger.file.name", "", "log file base name (default: app.log)")
+	pflag.String("logger.file.maxAge", "", "log file max age (default: 24h)")
+	pflag.String("logger.file.rotationTime", "", "log file rotation time (default: 168h)")
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
-	viper.BindPFlags(pflag.CommandLine)
+	_ = viper.BindPFlags(pflag.CommandLine)
 
 	err := config.LoadConfig(*configFile)
 	if err != nil {
