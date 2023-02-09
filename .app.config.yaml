@@ -1,15 +1,93 @@
-app: {}
-service:
+http:
   host: 0.0.0.0
   port: 8000
-fiber: {}
-postgres: {}
-redis: {}
+  prefix: ""
+  apiPath: "/api"
+postgres:
+  host: 127.0.0.1
+  port: 5432
+  sslMode: disable
+  db: postgres
+  user: postgres
+  password: postgres
+  maxOpenConn: 0
+  maxIdleConn: 2
+  connMaxIdleTime: 1m
+  connMaxLifetime: 1h
+redis:
+  auth: false
+  host: 127.0.0.1
+  port: 6379
+  database: 0
+  poolSize: 10
+  username: ""
+  password: ""
 logger:
   level: debug
-  writeToFile: true
+  writeToFile: false
   file:
     path: ./
     name: app.log
     maxAge: 24h
     rotationTime: 168h
+fiber:
+  prefork: false
+  serverHeader: app
+  strictRouting: true
+  caseSensitive: true
+  immutable: false
+  unescapePath: false
+  etag: true
+  bodyLimit: 4194304
+  concurrency: 262144
+  readTimeout: 4s
+  writeTimeout: 4s
+  idleTimeout: 4s
+  readBufferSize: 4096
+  writeBufferSize: 4096
+  compressedFileSuffix: .fiber.gz
+  proxyHeader: ""
+  getOnly: false
+  disableKeepalive: false
+  disableDefaultDate: false
+  disableDefaultContentType: false
+  disableHeaderNormalizing: false
+  disableStartupMessage: false
+  appName: app
+  streamRequestBody: true
+  disablePreParseMultipartForm: false
+  reduceMemoryUsage: false
+  network: tcp4
+  enableTrustedProxyCheck: false
+  trustedProxies: []
+  enableIpValidation: true
+  enablePrintRoutes: false
+  encryptCookie:
+    key: "secret-thirty-2-character-string"
+  csrf:
+    enable: true
+    cookieSecure: true
+    cookieHttpOnly: true
+  cache:
+    expiration: 1m
+    control: true
+    header: X-Cache
+  limiter:
+    max: 5
+    expiration: 1m
+    skipFailedRequests: false
+    skipSuccessfulRequests: false
+  cors:
+    allowOrigins:
+      - "*"
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+      - HEAD
+    allowHeaders: []
+    exposeHeaders: []
+    allowCredentials: true
+    maxAge: 0
