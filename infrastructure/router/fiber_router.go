@@ -4,6 +4,8 @@ import (
 	"app/config"
 	"app/pkg/logger"
 	fiberlogger "app/pkg/middleware/fiberlogger"
+	"embed"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
@@ -20,6 +22,9 @@ import (
 	"github.com/gofiber/storage/redis"
 	"github.com/spf13/viper"
 )
+
+//go:embed assets
+var assets embed.FS
 
 func NewFiberRouter(logger logger.Logger) *fiber.App {
 	s := redis.New(config.NewFiberRedisStorageConfig())
@@ -50,8 +55,9 @@ func NewFiberRouter(logger logger.Logger) *fiber.App {
 	}
 	f.Use(
 		favicon.New(favicon.Config{
-			File: "./favicon.ico",
-			URL:  "/favicon.ico",
+			File:       "assets/favicon.ico",
+			URL:        "/favicon.ico",
+			FileSystem: http.FS(assets),
 		}),
 	)
 	return f
