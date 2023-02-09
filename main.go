@@ -1,8 +1,8 @@
 package main
 
 import (
+	"app/config"
 	"app/infrastructure/db"
-	"app/pkg/config"
 	"app/pkg/logger"
 	"app/service"
 	"embed"
@@ -48,50 +48,55 @@ func main() {
 	pflag.Parse()
 	_ = viper.BindPFlags(pflag.CommandLine)
 
+	logger.LoggerConfigSetDefault()
+	config.SetDefaults()
 	err := config.LoadConfig(*configFile)
 	if err != nil {
 		panic(err)
 	}
-	log := logger.NewLogger()
-	err = log.SetLogLevel(viper.GetString("logger.level"))
-	if err != nil {
-		log.AddError(err).Error()
-	}
 
+	log := logger.NewLogger()
 	source, err := iofs.New(migrations, "infrastructure/migrations")
 	if err != nil {
-		log.AddError(err).Fatal()
+		log.AddError(err).Fatal("cannot make source driver")
 	}
-	m, err := migrate.NewWithSourceInstance("iofs", source, config.Postgres.GetUrl())
+	m, err := migrate.NewWithSourceInstance("iofs", source, config.PostgresUrl())
 	if err != nil {
-		log.AddError(err).Fatal()
+		log.AddError(err).Fatal("cannot source migrations")
 	}
 	err = m.Up()
 	if err != nil {
 		if err == migrate.ErrNoChange {
-			log.AddError(err).Debug("migrations")
+			log.AddError(err).Debug("cannot migrate up")
 		} else {
-			log.AddError(err).Fatal()
+			log.AddError(err).Fatal("cannot migrate up")
 		}
 	}
-	db, err := db.NewPostgres()
+	pg, err := db.NewPostgres()
 	if err != nil {
-		log.AddError(err).Fatal()
+		log.AddError(err).Fatal("cannot create postgres connection")
 	}
-	defer db.Close()
+	defer pg.Close()
 
-	s := service.NewService(log, db)
+	rc := db.NewRedisClient()
+	defer rc.Close()
+
+	s := service.NewHTTPService(log, pg, rc)
 	s.RegisterUtilityRoutes()
 	s.RegisterUserRoutes()
+	s.RegisterNotFoundRoutes()
 
 	go func() {
 		log.AddError(s.Serve()).Error()
 	}()
 
-	c := make(chan os.Signal, 1)                    // Create channel to signify a signal being sent
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM) // When an interrupt or termination signal is sent, notify the channel
+	// Create channel to signify a signal being sent
+	c := make(chan os.Signal, 1)
+	// When an interrupt or termination signal is sent, notify the channel
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
-	<-c // This blocks the main thread until an interrupt is received
+	// This blocks the main thread until an interrupt is received
+	<-c
 	log.Info("gracefully shutting down...")
 	_ = s.Shutdown()
 	log.Info("running cleanup tasks...")
