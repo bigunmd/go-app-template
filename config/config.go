@@ -9,20 +9,16 @@ import (
 const ConfigFileName string = ".app.config"
 const ConfigFileType string = "yaml"
 
-func LoadConfig(configFilePath string) error {
+func LoadConfig() {
 	viper.AddConfigPath("~/")
 	viper.AddConfigPath("./")
 	viper.SetConfigName(ConfigFileName)
 	viper.SetConfigType(ConfigFileType)
-	if !strings.EqualFold(configFilePath, "") {
-		viper.SetConfigFile(configFilePath)
+	if !strings.EqualFold(viper.GetString("config.filePath"), "") {
+		viper.SetConfigFile(viper.GetString("config.filePath"))
 	}
 	viper.AutomaticEnv()
-	err := viper.ReadInConfig()
-	if err != nil {
-		return err
-	}
-	return nil
+	_ = viper.ReadInConfig()
 }
 
 func SetDefaults() {
