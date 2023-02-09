@@ -110,7 +110,7 @@ func NewLogger() Logger {
 	}
 	logger.SetLevel(lvl)
 	logger.SetReportCaller(true)
-	jsonFmt := &logrus.JSONFormatter{PrettyPrint: true}
+	jsonFmt := &logrus.JSONFormatter{}
 	if viper.GetBool("logger.writeToFile") {
 		jsonFmt.PrettyPrint = false
 		writer, err := rotatelogs.New(
