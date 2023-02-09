@@ -9,7 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 )
 
-type UtilityController interface {
+type UtilityHttpController interface {
 	RegisterRoutes()
 }
 
@@ -18,7 +18,7 @@ type controller struct {
 	router fiber.Router
 }
 
-// RegisterRoutes implements UtilityController
+// RegisterRoutes implements UtilityHttpController
 func (c *controller) RegisterRoutes() {
 	c.router.Get("/metrics", monitor.New())
 	c.router.Get("/api/metrics", monitor.New(monitor.Config{APIOnly: true}))
@@ -26,7 +26,7 @@ func (c *controller) RegisterRoutes() {
 	sr.Get("*", swagger.HandlerDefault)
 }
 
-func NewUtilityController(router fiber.Router, logger logger.Logger) UtilityController {
+func NewUtilityController(router fiber.Router, logger logger.Logger) UtilityHttpController {
 	return &controller{
 		log:    logger,
 		router: router,
