@@ -37,7 +37,7 @@ var migrations embed.FS
 // @host		127.0.0.1:8000
 // @BasePath	/api
 func main() {
-	configFile := pflag.String("config", "", "configuration file")
+	pflag.String("config.filePath", "", "configuration file")
 	pflag.String("logger.level", "", "set logger level [panic, fatal, error, warn, info, debug, trace]")
 	pflag.Bool("logger.writeToFile", false, "write logs to filesystem (default: false)")
 	pflag.String("logger.file.path", "", "where to store log files (default: '~/')")
@@ -50,10 +50,7 @@ func main() {
 
 	logger.LoggerConfigSetDefault()
 	config.SetDefaults()
-	err := config.LoadConfig(*configFile)
-	if err != nil {
-		panic(err)
-	}
+	config.LoadConfig()
 
 	log := logger.NewLogger()
 	source, err := iofs.New(migrations, "infrastructure/migrations")
