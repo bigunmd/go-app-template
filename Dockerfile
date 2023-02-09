@@ -8,10 +8,10 @@ RUN go mod download
 COPY . .
 
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
-RUN go build -ldflags="-s -w" -o service
+RUN go build -ldflags="-s -w" -o app
 
 FROM scratch
 
-COPY --from=builder ["/build/service", "/"]
+COPY --from=builder ["/build/app", "/"]
 
-ENTRYPOINT ["/service"]
+ENTRYPOINT ["/app"]
