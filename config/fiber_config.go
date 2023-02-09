@@ -120,6 +120,14 @@ func FiberConfigSetDefault() {
 	viper.SetDefault("fiber.cors.allowCredentials", true)
 	_ = viper.BindEnv("fiber.cors.maxAge", "FIBER_CORS_MAX_AGE")
 	viper.SetDefault("fiber.cors.maxAge", 0)
+
+	_ = viper.BindEnv("fiber.pprof.prefix", "FIBER_PPROF_PREFIX")
+	viper.SetDefault("fiber.pprof.prefix", "")
+
+	_ = viper.BindEnv("fiber.prometheus.serviceName", "FIBER_PROMETHEUS_SERVICE_NAME")
+	viper.SetDefault("fiber.prometheus.serviceName", "app")
+	_ = viper.BindEnv("fiber.prometheus.path", "FIBER_PROMETHEUS_PATH")
+	viper.SetDefault("fiber.prometheus.path", "/metrics")
 }
 
 func NewFiberConfig() fiber.Config {

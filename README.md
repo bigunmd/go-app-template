@@ -11,14 +11,19 @@
     - [migrate](#migrate)
   - [Makefile](#makefile)
     - [Postgres migrations](#postgres-migrations)
+    - [Application](#application)
+    - [Docker](#docker)
+      - [Application](#application-1)
+      - [Postgres](#postgres)
+      - [Redis](#redis)
   - [Configuration](#configuration)
     - [Http](#http)
       - [yaml](#yaml)
       - [env](#env)
-    - [Postgres](#postgres)
+    - [Postgres](#postgres-1)
       - [yaml](#yaml-1)
       - [env](#env-1)
-    - [Redis](#redis)
+    - [Redis](#redis-1)
       - [yaml](#yaml-2)
       - [env](#env-2)
     - [Fiber](#fiber)
@@ -76,6 +81,51 @@ $ make migrate.down
 To force migrations up to a certain version
 ```bash
 $ version=000003 make migrate.force
+```
+### Application
+To test, build and run application
+```bash
+$ make run
+```
+### Docker
+To start project within docker network
+```bash
+$ make docker.run
+```
+To stop
+```bash
+$ make docker.stop
+```
+#### Application
+To build application docker image
+```bash
+$ make docker.app.build
+```
+To start application
+```bash
+$ make docker.app
+```
+To stop application
+```bash
+$ make docker.stop.app
+```
+#### Postgres
+To start postgres instance
+```bash
+$ make docker.postgres
+```
+To stop
+```bash
+$ make docker.stop.postgres
+```
+#### Redis
+To start redis instance
+```bash
+$ make docker.redis
+```
+To stop
+```bash
+$ make docker.stop.redis
 ```
 ## Configuration
 ### Http
@@ -208,6 +258,11 @@ fiber:
     exposeHeaders: []
     allowCredentials: true
     maxAge: 0
+  pprof:
+    prefix: ""
+  prometheus:
+    serviceName: app
+    path: /metrics
 ```
 #### env
 ```bash
@@ -263,6 +318,11 @@ FIBER_CORS_ALLOW_HEADERS="" # example: "a b c d"
 FIBER_CORS_EXPOSE_HEADERS="" # example: "a b c d"
 FIBER_CORS_ALLOW_CREDENTIALS=true
 FIBER_CORS_MAX_AGE=0
+
+FIBER_PPROF_PREFIX="" # access pprof information on $(prefix)/debug/pprof
+
+FIBER_PROMETHEUS_SERVICE_NAME="app"
+FIBER_PROMETHEUS_PATH="/metrics"
 ```
 ### Logger
 #### yaml

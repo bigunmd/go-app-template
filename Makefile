@@ -34,7 +34,7 @@ docker.app: docker.app.build
 		-e REDIS_HOST=$(APP_NAME)-redis \
 		-p 8000:8000 \
 		$(APP_NAME)
-docker.app.stop:
+docker.stop.app:
 	docker stop $(APP_NAME)
 docker.network:
 	docker network inspect dev-network >/dev/null 2>&1 || \
@@ -58,8 +58,8 @@ docker.postgres:
 		postgres
 docker.stop.postgres:
 	docker stop $(APP_NAME)-postgres
-docker.stop: docker.stop.redis docker.stop.postgres
-docker.run: docker.network docker.redis docker.postgres
+docker.stop: docker.stop.redis docker.stop.postgres docker.stop.app
+docker.run: docker.network docker.redis docker.postgres docker.app
 migrate.create:
 	migrate create -dir $(MIGRATIONS_FOLDER) -ext .sql -seq $(migration_name)
 migrate.up:

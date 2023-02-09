@@ -34,8 +34,8 @@ var migrations embed.FS
 //	@license.name	Apache 2.0
 //	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host		127.0.0.1:8000
-// @BasePath	/api
+//	@host		127.0.0.1:8000
+//	@BasePath	/api
 func main() {
 	pflag.String("config.filePath", "", "configuration file")
 	pflag.String("logger.level", "", "set logger level [panic, fatal, error, warn, info, debug, trace]")

@@ -7,6 +7,7 @@ import (
 	"embed"
 	"net/http"
 
+	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/compress"
@@ -16,6 +17,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
+	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/gofiber/helmet/v2"
@@ -41,6 +43,9 @@ func NewFiberRouter(logger logger.Logger) *fiber.App {
 		),
 		cache.New(config.NewFiberCacheConfig(s)),
 		limiter.New(config.NewFiberLimiterConfig(s)),
+		pprof.New(pprof.Config{
+			Prefix: viper.GetString("fiber.pprof.prefix"),
+		}),
 	)
 	if viper.GetBool("fiber.etag") {
 		f.Use(etag.New())
@@ -60,5 +65,8 @@ func NewFiberRouter(logger logger.Logger) *fiber.App {
 			FileSystem: http.FS(assets),
 		}),
 	)
+	prometheus := fiberprometheus.New(viper.GetString("fiber.prometheus.serviceName"))
+	prometheus.RegisterAt(f, viper.GetString("fiber.prometheus.path"))
+	f.Use(prometheus.Middleware)
 	return f
 }

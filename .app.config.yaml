@@ -91,3 +91,8 @@ fiber:
     exposeHeaders: []
     allowCredentials: true
     maxAge: 0
+  pprof:
+    prefix: ""
+  prometheus:
+    serviceName: app
+    path: /metrics

@@ -20,8 +20,8 @@ type controller struct {
 
 // RegisterRoutes implements UtilityHttpController
 func (c *controller) RegisterRoutes() {
-	c.router.Get("/metrics", monitor.New())
-	c.router.Get("/api/metrics", monitor.New(monitor.Config{APIOnly: true}))
+	c.router.Get("/monitor", monitor.New())
+	c.router.Get("/api/monitor", monitor.New(monitor.Config{APIOnly: true}))
 	sr := c.router.Group("/swagger")
 	sr.Get("*", swagger.HandlerDefault)
 }
