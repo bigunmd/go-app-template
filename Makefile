@@ -69,4 +69,4 @@ migrate.down:
 migrate.force:
 	migrate -path $(MIGRATIONS_FOLDER) -database "$(POSTGRES_URL)" force $(version)
 swag:
-	swag fmt -d .,./service && swag init -d .,./service -pd fiber
+	swag fmt -d .,./user && swag init -d .,./user -pd fiber
