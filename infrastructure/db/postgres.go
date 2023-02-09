@@ -1,19 +1,20 @@
 package db
 
 import (
-	"app/pkg/config"
+	"app/config"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/spf13/viper"
 )
 
 func NewPostgres() (*sqlx.DB, error) {
-	db, err := sqlx.Connect("pgx", config.Postgres.GetConfigString())
+	db, err := sqlx.Connect("pgx", config.PostgresConfigString())
 	if err != nil {
 		return nil, err
 	}
-	db.SetConnMaxIdleTime(config.Postgres.ConnMaxIdleTime)
-	db.SetConnMaxLifetime(config.Postgres.ConnMaxLifetime)
-	db.SetMaxIdleConns(config.Postgres.MaxIdleConns)
-	db.SetMaxOpenConns(config.Postgres.MaxOpenConns)
+	db.SetConnMaxIdleTime(viper.GetDuration("postgres.connMaxIdleTime"))
+	db.SetConnMaxLifetime(viper.GetDuration("postgres.connMaxLifetime"))
+	db.SetMaxIdleConns(viper.GetInt("postgres.maxIdleConn"))
+	db.SetMaxOpenConns(viper.GetInt("postgres.maxOpenConn"))
 	return db, nil
 }
