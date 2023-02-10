@@ -101,6 +101,10 @@ To build application docker image
 ```bash
 $ make docker.app.build
 ```
+You can also override build args to access GOPRIVATE repositories inside container
+```
+$ GOPRIVATE="" GOPRIVATE_USER="" GOPRIVATE_PAT="" GOPRIVATE_SCHEMA="" make docker.app.build
+```
 To start application
 ```bash
 $ make docker.app

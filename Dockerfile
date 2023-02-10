@@ -1,4 +1,11 @@
-FROM golang:1.19-alpine AS builder
+FROM golang:1.19 AS builder
+
+ARG GOPRIVATE_USER="__token__"
+ARG GOPRIVATE_PAT=""
+ARG GOPRIVATE=""
+ARG GOPRIVATE_SCHEMA="https"
+
+RUN git config --global url."${GOPRIVATE_SCHEMA}://${GOPRIVATE_USER}:${GOPRIVATE_PAT}@${GOPRIVATE}/".insteadOf ${GOPRIVATE_SCHEMA}://${GOPRIVATE}/
 
 WORKDIR /build
 

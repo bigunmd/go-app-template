@@ -8,6 +8,10 @@ POSTGRES_PASSWORD = postgres
 POSTGRES_DB = postgres
 POSTGRES_SSL_MODE=disable
 POSTGRES_URL = postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)?sslmode=$(POSTGRES_SSL_MODE)
+GOPRIVATE_USER = "__token__"
+GOPRIVATE_PAT = ""
+GOPRIVATE = ""
+GOPRIVATE_SCHEMA = "https"
 
 clean:
 	rm -rf ./build
@@ -25,7 +29,13 @@ build: test
 run: swag build
 	$(BUILD_DIR)/$(APP_NAME)
 docker.app.build:
-	docker build --rm -t $(APP_NAME) .
+	docker build --rm \
+	-t $(APP_NAME) \
+	--build-arg GOPRIVATE=$(GOPRIVATE) \
+	--build-arg GOPRIVATE_USER=$(GOPRIVATE_USER) \
+	--build-arg GOPRIVATE_PAT=$(GOPRIVATE_PAT) \
+	--build-arg GOPRIVATE_SCHEMA=$(GOPRIVATE_SCHEMA) \
+	.
 docker.app: docker.app.build
 	docker run --rm -d \
 		--name $(APP_NAME) \
