@@ -1,4 +1,12 @@
 # App
+
+Golang application template. Based on clean architecture principles
+- `domain/*` - buisness related logic with described usecases, repositories, presenters and services
+- `infrastructure/*` - selected frameworks that are used to drive the implementation of buisness rules for usecase, repository and presenter interfaces
+- `pkg/*` - additional, non-dependant logic that can be also used externaly, outside of current project scope
+- `service/*` - implementation of the domain's http service interface (can be in form of cli service, websocket service, etc.)
+- `user/*` - implementation of the domain's user usecase, repository and presenter interfaces
+- `main.go` - application entrypoint
 ## List of contents
 - [App](#app)
   - [List of contents](#list-of-contents)
