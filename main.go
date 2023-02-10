@@ -4,6 +4,7 @@ import (
 	"app/config"
 	"app/infrastructure/db"
 	"app/pkg/logger"
+	"app/pkg/migrator"
 	"app/service"
 	"embed"
 	"flag"
@@ -12,7 +13,6 @@ import (
 	"syscall"
 
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/spf13/pflag"
@@ -34,34 +34,41 @@ var migrations embed.FS
 //	@license.name	Apache 2.0
 //	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
 
-//	@host		127.0.0.1:8000
-//	@BasePath	/api
+// @host		127.0.0.1:8000
+// @BasePath	/api
 func main() {
-	pflag.String("config.filePath", "", "configuration file")
-	pflag.String("logger.level", "", "set logger level [panic, fatal, error, warn, info, debug, trace]")
-	pflag.Bool("logger.writeToFile", false, "write logs to filesystem (default: false)")
-	pflag.String("logger.file.path", "", "where to store log files (default: '~/')")
-	pflag.String("logger.file.name", "", "log file base name (default: app.log)")
-	pflag.String("logger.file.maxAge", "", "log file max age (default: 24h)")
-	pflag.String("logger.file.rotationTime", "", "log file rotation time (default: 168h)")
+	// Parse cli args to config
+	pflag.String("config.filePath", ".app.config.yaml", "configuration file")
+	pflag.String("http.host", "0.0.0.0", "serve http on specified host")
+	pflag.Int("http.port", 8000, "serve http on specified port")
+	pflag.String("logger.level", "info", "set logger level [panic, fatal, error, warn, info, debug, trace]")
+	pflag.Bool("logger.writeToFile", false, "write logs to filesystem")
+	pflag.String("logger.file.path", "~/", "where to store log files")
+	pflag.String("logger.file.name", "app.log", "log file base name")
+	pflag.String("logger.file.maxAge", "24h", "log file max age")
+	pflag.String("logger.file.rotationTime", "168h", "log file rotation time")
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	pflag.Parse()
 	_ = viper.BindPFlags(pflag.CommandLine)
 
+	// Load configuration defaults
 	logger.LoggerConfigSetDefault()
 	config.SetDefaults()
+	// Load config
 	config.LoadConfig()
-
+	// Create logger instance
 	log := logger.NewLogger()
+	// Load migration source from embeded filesystem
 	source, err := iofs.New(migrations, "infrastructure/migrations")
 	if err != nil {
 		log.AddError(err).Fatal("cannot make source driver")
 	}
-	m, err := migrate.NewWithSourceInstance("iofs", source, config.PostgresUrl())
+	// Create migrator instance and apply migrations
+	m, err := migrator.NewPgMigrator(config.PostgresUrl(), source, log)
 	if err != nil {
-		log.AddError(err).Fatal("cannot source migrations")
+		log.AddError(err).Fatal("cannot create postgres migrator")
 	}
-	err = m.Up()
+	err = m.MigrateUP()
 	if err != nil {
 		if err == migrate.ErrNoChange {
 			log.AddError(err).Debug("cannot migrate up")
@@ -69,20 +76,24 @@ func main() {
 			log.AddError(err).Fatal("cannot migrate up")
 		}
 	}
+	// Create postgres database instance
 	pg, err := db.NewPostgres()
 	if err != nil {
 		log.AddError(err).Fatal("cannot create postgres connection")
 	}
 	defer pg.Close()
 
+	// Create redis client instance
 	rc := db.NewRedisClient()
 	defer rc.Close()
 
+	// Create http service instance
 	s := service.NewHTTPService(log, pg, rc)
 	s.RegisterUtilityRoutes()
 	s.RegisterUserRoutes()
 	s.RegisterNotFoundRoutes()
 
+	// Start http service on in a separate goroutine instance
 	go func() {
 		log.AddError(s.Serve()).Error()
 	}()
