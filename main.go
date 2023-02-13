@@ -94,7 +94,7 @@ func main() {
 	s.RegisterUserRoutes()
 	s.RegisterNotFoundRoutes()
 
-	// Start http service on in a separate goroutine instance
+	// Start http service in a separate goroutine instance
 	go func() {
 		log.AddError(s.Serve()).Error()
 	}()
