@@ -14,6 +14,7 @@ import (
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
+
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
