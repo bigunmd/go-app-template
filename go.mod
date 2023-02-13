@@ -3,6 +3,7 @@ module app
 go 1.19
 
 require (
+	github.com/ansrivas/fiberprometheus/v2 v2.5.0
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/sirupsen/logrus v1.9.0
@@ -15,7 +16,6 @@ require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/ansrivas/fiberprometheus/v2 v2.5.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
@@ -91,7 +91,6 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v5 v5.2.0
 	github.com/jmoiron/sqlx v1.3.5
-	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/spf13/viper v1.15.0
 	golang.org/x/sys v0.5.0 // indirect
