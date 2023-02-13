@@ -3,7 +3,7 @@ package router
 import (
 	"app/config"
 	"app/pkg/logger"
-	fiberlogger "app/pkg/middleware/fiberlogger"
+	"app/pkg/logger/fiberlogger"
 	"embed"
 	"net/http"
 
@@ -32,7 +32,21 @@ func NewFiberRouter(logger logger.Logger) *fiber.App {
 	s := redis.New(config.NewFiberRedisStorageConfig())
 	f := fiber.New(config.NewFiberConfig())
 	f.Use(
-		fiberlogger.New(logger),
+		fiberlogger.New(
+			fiberlogger.Config{
+				Logger: logger,
+				Tags: []string{
+					fiberlogger.TagStatus,
+					fiberlogger.TagMethod,
+					fiberlogger.TagHost,
+					fiberlogger.TagLatency,
+					fiberlogger.TagPid,
+					fiberlogger.TagProtocol,
+					fiberlogger.TagQueryStringParams,
+					fiberlogger.AttachKeyTag(fiberlogger.TagLocals, "requestid"),
+				},
+			},
+		),
 		recover.New(),
 		compress.New(),
 		cors.New(config.NewFiberCorsConfig()),
