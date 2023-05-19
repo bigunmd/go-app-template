@@ -1,4 +1,4 @@
-# App
+# App [![Mentioned in Awesome Fiber](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/gofiber/awesome-fiber)
 
 Golang application template. Based on clean architecture principles
 - `domain/*` - business related logic with described usecases, repositories, presenters and services
