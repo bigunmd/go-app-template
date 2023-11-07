@@ -11,6 +11,7 @@ type AppCfg struct {
 	TLS      TLS      `json:"tls" yaml:"tls" env-prefix:"TLS_"`
 	Postgres Postgres `json:"postgres" yaml:"postgres" env-prefix:"POSTGRES_"`
 	Redis    Redis    `json:"redis" yaml:"redis" env-prefix:"REDIS_"`
+	Swagger  Swagger  `json:"swagger" yaml:"swagger" env-prefix:"SWAGGER_"`
 }
 
 func NewAppCfg(filepath string) (*AppCfg, error) {

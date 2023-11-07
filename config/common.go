@@ -13,10 +13,16 @@ type HTTP struct {
 	Host    string        `json:"host" yaml:"host" env:"HOST" env-default:"0.0.0.0"`
 	Port    int32         `json:"port" yaml:"port" env:"PORT" env-default:"8000"`
 	Timeout time.Duration `json:"timeout" yaml:"timeout" env:"TIMEOUT" env-default:"4s"`
+	Prefix  string        `json:"prefix" yaml:"prefix" env:"PREFIX" env-default:""`
+	APIPath string        `json:"api_path" yaml:"apiPath" env:"API_PATH" env-default:"/api"`
 }
 
 func (http HTTP) Addr() string {
 	return fmt.Sprintf("%s:%v", http.Host, http.Port)
+}
+
+func (http HTTP) FullAPIPath() string {
+	return fmt.Sprintf("%s%s", http.Prefix, http.APIPath)
 }
 
 type TLS struct {
@@ -89,4 +95,9 @@ type Redis struct {
 
 func (redis Redis) Addr() string {
 	return fmt.Sprintf("%s:%v", redis.Host, redis.Port)
+}
+
+type Swagger struct {
+	Host     string `json:"host" yaml:"host" env:"HOST" env-default:"127.0.0.1:8888"`
+	BasePath string `json:"base_path" yaml:"basePath" env:"BASE_PATH" env-default:"/api"`
 }

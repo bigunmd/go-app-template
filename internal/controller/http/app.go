@@ -22,7 +22,8 @@ type AppHTTPController interface {
 }
 
 type AppHTTPControllerConfig struct {
-	Timeout time.Duration
+	BasePath string
+	Timeout  time.Duration
 }
 
 type appHTTPController struct {
@@ -33,6 +34,17 @@ type appHTTPController struct {
 }
 
 // CreateBook implements AppHTTPController.
+//
+//	@Summary		Create book
+//	@Description	Create book
+//	@Tags			books
+//	@Accept			json
+//	@Param			data	body	domain.Book	true	"book attributes"
+//	@Success		201
+//	@Header			201	{string}	Location	"/books/:id"
+//	@Failure		400	{object}	fiber.Error
+//	@Failure		500	{object}	fiber.Error
+//	@Router			/books [post]
 func (hc *appHTTPController) CreateBook() func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		book := &domain.Book{}
@@ -50,12 +62,22 @@ func (hc *appHTTPController) CreateBook() func(*fiber.Ctx) error {
 			hc.log.WithFields(structs.Map(book)).Error("cannot add new book")
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.ErrInternalServerError)
 		}
-		c.Append(fiber.HeaderLocation, c.Path()+"/"+b.ID.String())
+		c.Location(c.Path() + "/" + b.ID.String())
 		return c.SendStatus(fiber.StatusCreated)
 	}
 }
 
 // DeleteBook implements AppHTTPController.
+//
+//	@Summary		Delete book
+//	@Description	Delete book
+//	@Tags			books
+//	@Produce		json
+//	@Param			id	path	string	true	"book uuid"
+//	@Success		204
+//	@Failure		400	{object}	fiber.Error
+//	@Failure		500	{object}	fiber.Error
+//	@Router			/books/{id} [delete]
 func (hc *appHTTPController) DeleteBook() func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		bookID, err := uuid.Parse(c.Params("id"))
@@ -74,6 +96,17 @@ func (hc *appHTTPController) DeleteBook() func(*fiber.Ctx) error {
 }
 
 // GetBook implements AppHTTPController.
+//
+//	@Summary		Get book
+//	@Description	Get book
+//	@Tags			books
+//	@Produce		json
+//	@Param			id	path		string	true	"book uuid"
+//	@Success		200	{object}	domain.Book
+//	@Failure		400	{object}	fiber.Error
+//	@Failure		404	{object}	fiber.Error
+//	@Failure		500	{object}	fiber.Error
+//	@Router			/books/{id} [get]
 func (hc *appHTTPController) GetBook() func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		bookID, err := uuid.Parse(c.Params("id"))
@@ -95,6 +128,19 @@ func (hc *appHTTPController) GetBook() func(*fiber.Ctx) error {
 }
 
 // GetBooks implements AppHTTPController.
+//
+//	@Summary		Get books
+//	@Description	Get books
+//	@Tags			books
+//	@Produce		json
+//	@Param			limit		query		int		false	"page size limit"
+//	@Param			offset		query		int		false	"page offset"
+//	@Param			name		query		string	false	"name search pattern"
+//	@Param			description	query		string	false	"description search pattern"
+//	@Success		200			{object}	domain.BookPage
+//	@Failure		400			{object}	fiber.Error
+//	@Failure		500			{object}	fiber.Error
+//	@Router			/books [get]
 func (hc *appHTTPController) GetBooks() func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		ctx, cancel := context.WithTimeout(context.Background(), hc.config.Timeout)
@@ -117,6 +163,17 @@ func (hc *appHTTPController) GetBooks() func(*fiber.Ctx) error {
 }
 
 // UpdateBook implements AppHTTPController.
+//
+//	@Summary		Update book
+//	@Description	Update book
+//	@Tags			books
+//	@Accept			json
+//	@Param			id		path	string		true	"book uuid"
+//	@Param			data	body	domain.Book	true	"book attributes"
+//	@Success		204
+//	@Failure		400	{object}	fiber.Error
+//	@Failure		500	{object}	fiber.Error
+//	@Router			/books/{id} [put]
 func (hc *appHTTPController) UpdateBook() func(*fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		bookID, err := uuid.Parse(c.Params("id"))
@@ -141,7 +198,7 @@ func (hc *appHTTPController) UpdateBook() func(*fiber.Ctx) error {
 			hc.log.WithFields(structs.Map(book)).Error("cannot modify book")
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.ErrInternalServerError)
 		}
-		c.Append(fiber.HeaderLocation, c.Path())
+		c.Location(c.Path())
 		return c.SendStatus(fiber.StatusNoContent)
 	}
 }
@@ -158,7 +215,7 @@ func NewAppHTTPController(
 		config: config,
 		log:    logger.WithField("layer", "internal.controller.http.appHTTPController"),
 	}
-	books := hc.f.Group("/books")
+	books := hc.f.Group(hc.config.BasePath + "/books")
 	books.Post("", hc.CreateBook())
 	books.Get("/:id", hc.GetBook())
 	books.Get("", hc.GetBooks())

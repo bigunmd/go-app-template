@@ -16,6 +16,9 @@ MIGRATIONS_FOLDER = migrations/$(APP_NAME)
 DOCKER_PATH = ./docker/Dockerfile
 DOCKER_TAG = test
 DOCKER_NETWORK = dev-network
+
+PRIVATE_REGISTRY_PATH = ""
+
 GOPRIVATE_USER = "__token__"
 GOPRIVATE_PAT = ""
 GOPRIVATE = ""
@@ -38,6 +41,8 @@ run: build
 	$(BUILD_DIR)/$(APP_NAME)
 run.go:
 	go run ./cmd/$(APP_NAME)/main.go -c $(CONFIG_FILE)
+swag:
+	swag fmt -d ./internal && swag init -d ./cmd/$(APP_NAME),./internal/$(APP_NAME),./internal/controller/http -pd fiber
 
 migrate.create:
 	migrate create -dir $(MIGRATIONS_FOLDER) -ext .sql -seq $(NAME) -v 
@@ -76,5 +81,32 @@ docker.run.redis:
 		redis:7-alpine
 docker.stop.redis:
 	docker stop $(APP_NAME)-redis
+docker.remote.push:
+	docker buildx build --rm \
+	-t $(PRIVATE_REGISTRY_PATH)/$(APP_NAME):$(DOCKER_TAG) \
+	--build-arg APP_NAME=$(APP_NAME) \
+	--build-arg GOPRIVATE=$(GOPRIVATE) \
+	--build-arg GOPRIVATE_USER=$(GOPRIVATE_USER) \
+	--build-arg GOPRIVATE_PAT=$(GOPRIVATE_PAT) \
+	--build-arg GOPRIVATE_SCHEMA=$(GOPRIVATE_SCHEMA) \
+	-f $(DOCKER_PATH) . --push
+docker.build.app:
+	docker build --rm \
+	-t $(APP_NAME):$(DOCKER_TAG) \
+	--build-arg APP_NAME=$(APP_NAME) \
+	--build-arg GOPRIVATE=$(GOPRIVATE) \
+	--build-arg GOPRIVATE_USER=$(GOPRIVATE_USER) \
+	--build-arg GOPRIVATE_PAT=$(GOPRIVATE_PAT) \
+	--build-arg GOPRIVATE_SCHEMA=$(GOPRIVATE_SCHEMA) \
+	-f $(DOCKER_PATH) .
+docker.run.app: docker.build.app
+	docker run --rm \
+		--name $(APP_NAME) \
+		--network $(DOCKER_NETWORK) \
+		-e REDIS_HOST=$(APP_NAME)-redis \
+		-p 8000:8000 \
+		$(APP_NAME):$(DOCKER_TAG)
+docker.stop.app:
+	docker stop $(APP_NAME)
 docker.stop: docker.stop.postgres docker.stop.redis
 docker.run: docker.network docker.run.postgres docker.run.redis

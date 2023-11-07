@@ -1,0 +1,193 @@
+definitions:
+  domain.Book:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  domain.BookPage:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/domain.Book'
+        type: array
+      limit:
+        type: integer
+      metadata:
+        additionalProperties: true
+        type: object
+      offset:
+        type: integer
+      total:
+        type: integer
+    type: object
+  fiber.Error:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /books:
+    get:
+      description: Get books
+      parameters:
+      - description: page size limit
+        in: query
+        name: limit
+        type: integer
+      - description: page offset
+        in: query
+        name: offset
+        type: integer
+      - description: name search pattern
+        in: query
+        name: name
+        type: string
+      - description: description search pattern
+        in: query
+        name: description
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.BookPage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/fiber.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/fiber.Error'
+      summary: Get books
+      tags:
+      - books
+    post:
+      consumes:
+      - application/json
+      description: Create book
+      parameters:
+      - description: book attributes
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Book'
+      responses:
+        "201":
+          description: Created
+          headers:
+            Location:
+              description: /api/books/:id
+              type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/fiber.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/fiber.Error'
+      summary: Create book
+      tags:
+      - books
+  /books/{id}:
+    delete:
+      description: Delete book
+      parameters:
+      - description: book uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/fiber.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/fiber.Error'
+      summary: Delete book
+      tags:
+      - books
+    get:
+      description: Get book
+      parameters:
+      - description: book uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Book'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/fiber.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/fiber.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/fiber.Error'
+      summary: Get book
+      tags:
+      - books
+    put:
+      consumes:
+      - application/json
+      description: Update book
+      parameters:
+      - description: book uuid
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: book attributes
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Book'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/fiber.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/fiber.Error'
+      summary: Update book
+      tags:
+      - books
+swagger: "2.0"

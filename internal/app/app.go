@@ -10,10 +10,13 @@ import (
 	"os/signal"
 	"time"
 
+	swdocs "goapptemplate/docs"
 	httpController "goapptemplate/internal/controller/http"
 	"goapptemplate/internal/domain"
 	"goapptemplate/internal/usecase"
 	"goapptemplate/internal/usecase/repo"
+
+	swagger "github.com/gofiber/swagger"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mikhail-bigun/fiberlogrus"
@@ -31,6 +34,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//	@title			Books API
+//	@version		0.1.0
+//	@description	Go app template books API.
+
+//	@contact.name	John Doe
+//	@contact.email	johndoe@cia.gov
+
+//	@schemes	http https
 func Run(cfg *config.AppCfg) {
 	// ________________________________________________________________________
 	// Setup logger
@@ -104,6 +115,9 @@ func Run(cfg *config.AppCfg) {
 		}),
 	)
 	// ________________________________________________________________________
+	// Setup Swagger docs
+	setupSwagger(f, cfg)
+	// ________________________________________________________________________
 	// Create Books repository
 	br := repo.NewBooksPostgresRepo(db, logger)
 	// Create Books usecase
@@ -113,7 +127,8 @@ func Run(cfg *config.AppCfg) {
 		f,
 		bu,
 		&httpController.AppHTTPControllerConfig{
-			Timeout: cfg.HTTP.Timeout,
+			BasePath: cfg.HTTP.FullAPIPath(),
+			Timeout:  cfg.HTTP.Timeout,
 		},
 		logger,
 	)
@@ -175,4 +190,11 @@ func runHTTP(f *fiber.App, cfg *config.AppCfg) error {
 	} else {
 		return f.Listen(cfg.HTTP.Addr())
 	}
+}
+
+func setupSwagger(f *fiber.App, cfg *config.AppCfg) {
+	swdocs.SwaggerInfo.Host = cfg.Swagger.Host
+	swdocs.SwaggerInfo.BasePath = cfg.Swagger.BasePath
+	sr := f.Group(cfg.HTTP.Prefix + "/swagger")
+	sr.Get("*", swagger.HandlerDefault)
 }

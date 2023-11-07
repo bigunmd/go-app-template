@@ -29,6 +29,9 @@ Golang application template. Based on clean architecture principles
       - [Postgres](#postgres)
       - [Redis](#redis)
   - [Configuration](#configuration)
+    - [env](#env)
+    - [yaml](#yaml)
+    - [json](#json)
 ## Project requirements
 - Go 1.19
 - Docker
@@ -95,11 +98,11 @@ make docker.stop
 #### Application
 To build application docker image
 ```bash
-make docker.app.build
+make docker.buld.app
 ```
 You can also override build args to access GOPRIVATE repositories inside container
-```
-GOPRIVATE="" GOPRIVATE_USER="" GOPRIVATE_PAT="" GOPRIVATE_SCHEMA="" make docker.app.build
+```bash
+make docker.app.build GOPRIVATE="" GOPRIVATE_USER="" GOPRIVATE_PAT="" GOPRIVATE_SCHEMA=""
 ```
 To start application
 ```bash
@@ -128,3 +131,114 @@ To stop
 make docker.stop.redis
 ```
 ## Configuration
+### env
+```bash
+LOGGER_LEVEL="info" # standard logger level options (panic, fatal, warn/warning, info, debug, trace)
+
+HTTP_HOST="0.0.0.0"
+HTTP_PORT="8000"
+HTTP_TIMEOUT="4s"
+
+TLS_CERT_FILEPATH=""
+TLS_KEY_FILEPATH=""
+
+POSTGRES_HOST="127.0.0.1"
+POSTGRES_PORT="5432"
+POSTGRES_SSL_MODE="disable"
+POSTGRES_DB="postgres"
+POSTGRES_USER="postgres"
+POSTGRES_PASSWORD="postgres"
+POSTGRES_MAX_CONNS="10"
+POSTGRES_MIN_CONNS="2"
+POSTGRES_MAX_CONN_LIFETIME="10m"
+POSTGRES_MAX_CONN_IDLE_TIME="1m"
+POSTGRES_HEALTH_CHECK_PERIOD="10s"
+
+REDIS_HOST="127.0.0.1"
+REDIS_PORT="6379"
+REDIS_USERNAME=""
+REDIS_PASSWORD=""
+REDIS_DB="0"
+```
+### yaml
+```yaml
+logger:
+    level: info
+http:
+    host: 0.0.0.0
+    port: 8000
+    timeout: 4s
+tls:
+  cert:
+    filepath: ""
+  key:
+    filepath: ""
+postgres:
+    host: 127.0.0.1
+    port: 5432
+    sslMode: disable
+    db: postgres
+    user: postgres
+    maxConns: 10
+    minConns: 2
+    maxConnLifetime: 10m
+    maxConnIdleTime: 1m
+    healthCheckPeriod: 10s
+redis:
+    host: 127.0.0.1
+    port: 6379
+    username: ""
+    password: ""
+    db: 0
+```
+### json
+```json
+{
+    "logger": {
+        "level": "info",
+        "file": {
+            "path": "",
+            "name": "",
+            "max_age": "24h",
+            "rotation_time": "168h"
+        },
+        "format": {
+            "type": "text",
+            "caller": false,
+            "pretty": false
+        }
+    },
+    "http": {
+        "host": "0.0.0.0",
+        "port": "8000",
+        "timeout": "4s"
+    },
+    "tls": {
+      "cert": {
+        "filepath": "",
+      },
+      "key": {
+        "filepath": "",
+      }
+    },
+    "postgres": {
+        "host": "127.0.0.1",
+        "port": "5432",
+        "ssl_mode":"disable",
+        "db": "postgres",
+        "user": "postgres",
+        "max_conns": 10,
+        "min_conns": 2,
+        "max_conn_lifetime": "10m",
+        "max_conn_idle_time": "1m",
+        "health_check_period": "10s"
+    },
+    "redis": {
+        "host": "127.0.0.1",
+        "port": "6379",
+        "username": "",
+        "password": "",
+        "db": 0
+    }
+}
+```
