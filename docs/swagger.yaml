@@ -36,7 +36,12 @@ definitions:
         type: string
     type: object
 info:
-  contact: {}
+  contact:
+    email: johndoe@cia.gov
+    name: John Doe
+  description: Go app template books API.
+  title: Books API
+  version: 0.1.0
 paths:
   /books:
     get:
@@ -92,7 +97,7 @@ paths:
           description: Created
           headers:
             Location:
-              description: /api/books/:id
+              description: /books/:id
               type: string
         "400":
           description: Bad Request
@@ -190,4 +195,7 @@ paths:
       summary: Update book
       tags:
       - books
+schemes:
+- http
+- https
 swagger: "2.0"

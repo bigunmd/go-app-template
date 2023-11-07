@@ -1,7 +1,17 @@
 {
+    "schemes": [
+        "http",
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Go app template books API.",
+        "title": "Books API",
+        "contact": {
+            "name": "John Doe",
+            "email": "johndoe@cia.gov"
+        },
+        "version": "0.1.0"
     },
     "paths": {
         "/books": {
@@ -87,7 +97,7 @@
                         "headers": {
                             "Location": {
                                 "type": "string",
-                                "description": "/api/books/:id"
+                                "description": "/books/:id"
                             }
                         }
                     },

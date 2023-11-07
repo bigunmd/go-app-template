@@ -10,7 +10,10 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "John Doe",
+            "email": "johndoe@cia.gov"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -99,7 +102,7 @@ const docTemplate = `{
                         "headers": {
                             "Location": {
                                 "type": "string",
-                                "description": "/api/books/:id"
+                                "description": "/books/:id"
                             }
                         }
                     },
@@ -308,12 +311,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "0.1.0",
 	Host:             "",
 	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Schemes:          []string{"http", "https"},
+	Title:            "Books API",
+	Description:      "Go app template books API.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

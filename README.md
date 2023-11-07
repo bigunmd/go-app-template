@@ -138,6 +138,8 @@ LOGGER_LEVEL="info" # standard logger level options (panic, fatal, warn/warning,
 HTTP_HOST="0.0.0.0"
 HTTP_PORT="8000"
 HTTP_TIMEOUT="4s"
+HTTP_PREFIX=""
+HTTP_API_PATH="/api"
 
 TLS_CERT_FILEPATH=""
 TLS_KEY_FILEPATH=""
@@ -159,6 +161,9 @@ REDIS_PORT="6379"
 REDIS_USERNAME=""
 REDIS_PASSWORD=""
 REDIS_DB="0"
+
+SWAGGER_HOST="127.0.0.1:8888"
+SWAGGER_BASE_PATH="/api"
 ```
 ### yaml
 ```yaml
@@ -168,6 +173,8 @@ http:
     host: 0.0.0.0
     port: 8000
     timeout: 4s
+    prefix: ""
+    apiPath: /api
 tls:
   cert:
     filepath: ""
@@ -190,6 +197,9 @@ redis:
     username: ""
     password: ""
     db: 0
+swagger:
+  host: 127.0.0.1:8888
+  basePath: /api
 ```
 ### json
 ```json
@@ -211,7 +221,9 @@ redis:
     "http": {
         "host": "0.0.0.0",
         "port": "8000",
-        "timeout": "4s"
+        "timeout": "4s",
+        "prefix": "",
+        "api_path": "/api"
     },
     "tls": {
       "cert": {
@@ -239,6 +251,10 @@ redis:
         "username": "",
         "password": "",
         "db": 0
+    },
+    "swagger": {
+      "host": "127.0.0.1:8888",
+      "base_path": "/api"
     }
 }
 ```

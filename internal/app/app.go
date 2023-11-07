@@ -34,14 +34,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-//	@title			Books API
-//	@version		0.1.0
-//	@description	Go app template books API.
-
-//	@contact.name	John Doe
-//	@contact.email	johndoe@cia.gov
-
-//	@schemes	http https
 func Run(cfg *config.AppCfg) {
 	// ________________________________________________________________________
 	// Setup logger
