@@ -1,2 +1,0 @@
-DROP TABLE IF EXISTS service.user;
-DROP EXTENSION IF EXISTS citext;

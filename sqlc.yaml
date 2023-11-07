@@ -1,0 +1,11 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "queries/app"
+    schema: "migrations/app"
+    gen:
+      go:
+        package: "db"
+        sql_package: "pgx/v5"
+        out: "gen/app/db"
+        emit_result_struct_pointers: true
